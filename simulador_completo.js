@@ -1,4 +1,8 @@
-  let clientes = [];
+  let clientes = [
+    {cedula:"1712345678", nombre:"Juan",apellido:"Perez", ingresos:1200, egresos:"500"},
+    {cedula:"1723456789", nombre:"Maria", apellido:"Gomez", ingresos:1500, egresos:"600"},
+    {cedula:"1734567890", nombre:"Carlos",apellido:"Ramirez", ingresos:900, egresos:"350"}
+  ];
   let creditos = [];
 
   let tasaInteres = 15;
@@ -34,10 +38,10 @@
 
   function guardarTasa(){
     let cmptasaIntereses=document.getElementById("tasaInteres");
-    let tasaIntereses=parseInt(cmptasaIntereses.value);
+    tasaInteres=parseInt(cmptasaIntereses.value);
     
-    if (tasaIntereses>=10 && tasaIntereses<=20){
-      mostrarTexto("mensajeTasa","Tasa configurada correctamente:"+ tasaIntereses);
+    if (tasaInteres>=10 && tasaInteres<=20){
+      mostrarTexto("mensajeTasa","Tasa configurada correctamente:"+ tasaInteres);
     }else{
       mostrarTexto("mensajeTasa","La tasa debe estar entre 10% y 20%")
     }
@@ -103,16 +107,19 @@
 }
 
 function seleccionarCliente(cedula){
-  clienteSeleccionado= buscarCliente(cedula);
+  clienteSeleccionado=buscarCliente(cedula);
   if (clienteSeleccionado!=null){
-      let cedula=recuperaraTexto("txtCedula");
-      let nombre=recuperaraTexto("txtNombre");
-      let apellido=recuperaraTexto("txtApellido");
-      let ingreso=recuperarFloat("txtIngresos");
-      let egreso=recuperarFloat("txtEgresos");
-    }
-    guardarCliente();
-    pintarClientes();
+    let cmpCedula=document.getElementById("txtCedula");
+    cmpCedula.value=clienteSeleccionado.cedula;
+    let cmpNombre=document.getElementById("txtNombre");
+    cmpNombre.value=clienteSeleccionado.nombre;
+    let cmpApellido=document.getElementById("txtApellido");
+    cmpApellido.value=clienteSeleccionado.apellido;
+    let cmpIngresos=document.getElementById("txtIngresos");
+    cmpIngresos.value=clienteSeleccionado.ingresos;
+    let cmpEgresos=document.getElementById("txtEgresos");
+    cmpEgresos.value=clienteSeleccionado.egresos;
+  }
 }
 
 function limpiar(){
@@ -129,3 +136,63 @@ function limpiar(){
 
     clienteSeleccionado=null;
 }
+
+function buscarClienteCredito(){
+  let cmpTabla=document.getElementById("datosClienteCredito");
+  let cedula=recuperaraTexto("buscarCedulaCredito");
+  let existenciaCliente=buscarCliente(cedula);
+  let elementoTabla="";
+  if (existenciaCliente==null){
+    alert("Cliente no encontrado");
+  }else{
+    elementoTabla+="<h3>Datos del Cliente</h3>";
+    elementoTabla+="<p><strong>Cédula:</strong>"+existenciaCliente.cedula+"</p>";
+    elementoTabla+="<p><strong>Nombre:</strong>"+existenciaCliente.nombre+"</p>";
+    elementoTabla+="<p><strong>Apellido:</strong>"+existenciaCliente.apellido+"</p>";
+    elementoTabla+="<p><strong>Ingresos:</strong>"+existenciaCliente.ingresos+"</p>";
+    elementoTabla+="<p><strong>Egresos:</strong>"+existenciaCliente.egresos+"</p>";
+  }
+  cmpTabla.innerHTML=elementoTabla;
+}
+
+function calcularCredito(){
+  let monto=recuperarFloat("montoCredito");
+  let plazo=recuperarFloat("plazoCredito");
+  let cedula=recuperaraTexto("buscarCedulaCredito");
+  let existenciaCliente=buscarCliente(cedula);
+
+  if (existenciaCliente==null){
+    alert("Cliente no encontrado");
+  }else{
+    let montoDisponible=calcularDisponible(existenciaCliente.ingresos,existenciaCliente.egresos);
+    let capacidadPago=calcularCapacidadPago(montoDisponible);
+    let interes=calcularInteresSimple(monto,tasaInteres,plazo);
+    let totalPagar=calcularTotalPagar(monto,interes);
+    let cuotaMensual=calcularCuotaMensual(totalPagar,plazo);
+    creditoAprobado=aprobarCredito(capacidadPago,cuotaMensual);
+
+    let cmpResultado=document.getElementById("resultadoCredito");
+
+    cmpResultado.innerHTML=
+      "Capacidad de pago:"+capacidadPago+"<br>"+
+      "Total a pagar:"+totalPagar+"<br>"+
+      "Cuota mensual:"+cuotaMensual+"<br>";
+
+    if (creditoAprobado){
+      cmpResultado.innerHTML+="RESULTADO: APROBADO";
+      cmpResultado.className="aprobado";
+    }else{
+      cmpResultado.innerHTML+="RESULTADO: RECHAZADO";
+      cmpResultado.className="rechazado";
+    }
+  }
+}
+
+
+
+
+    
+
+
+
+
