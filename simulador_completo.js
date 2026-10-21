@@ -49,13 +49,22 @@
     let apellido=recuperaraTexto("txtApellido");
     let ingresos=recuperarFloat("txtIngresos");
     let egresos=recuperarFloat("txtEgresos");
-    let cliente = {};
-    cliente.cedula=cedula;
-    cliente.nombre=nombre;
-    cliente.apellido=apellido;
-    cliente.ingresos=ingresos;
-    cliente.egresos=egresos;
-    clientes.push(cliente);
+ 
+    let cliente=buscarCliente(cedula);
+    if (cliente==null){
+      let cliente = {};
+      cliente.cedula=cedula;
+      cliente.nombre=nombre;
+      cliente.apellido=apellido;
+      cliente.ingresos=ingresos;
+      cliente.egresos=egresos;
+      clientes.push(cliente);
+    }else{
+      cliente.nombre=nombre;
+      cliente.apellido=apellido;
+      cliente.ingresos=ingresos;
+      cliente.egresos=egresos;
+    }
     pintarClientes();
   }
 
@@ -71,10 +80,52 @@
       contenidoTabla+="<td>"+ elementoCliente.apellido + "</td>";
       contenidoTabla+="<td>"+ elementoCliente.ingresos + "</td>";
       contenidoTabla+="<td>"+ elementoCliente.egresos + "</td>";
-      contenidoTabla+="<td> <button>ACTUALIZAR</button> </td>"; 
-      contenidoTabla+="<td> <button>ELIMINAR</button> </td>"; 
+      contenidoTabla+="<td>"+
+      "<button onclick='seleccionarCliente("+elementoCliente.cedula+")'>ACTUALIZAR</button> <button>ELIMINAR</button> </td>"; 
       contenidoTabla+="</tr>"
     }
     contenidoTabla+="</table>"
     cmpTabla.innerHTML=contenidoTabla;
+
   }
+
+  function buscarCliente(cedula){
+    let elementoCliente;
+    let clienteEncontrado=null;
+    for (let i=0;i<clientes.length;i++){
+        elementoCliente=clientes[i];
+        if (elementoCliente.cedula==cedula){
+            clienteEncontrado=elementoCliente;
+            break
+        }
+    }
+    return clienteEncontrado;
+}
+
+function seleccionarCliente(cedula){
+  clienteSeleccionado= buscarCliente(cedula);
+  if (clienteSeleccionado!=null){
+      let cedula=recuperaraTexto("txtCedula");
+      let nombre=recuperaraTexto("txtNombre");
+      let apellido=recuperaraTexto("txtApellido");
+      let ingreso=recuperarFloat("txtIngresos");
+      let egreso=recuperarFloat("txtEgresos");
+    }
+    guardarCliente();
+    pintarClientes();
+}
+
+function limpiar(){
+    let cedula=document.getElementById("txtCedula")
+    cedula.value="";
+    let nombre=document.getElementById("txtNombre")
+    nombre.value="";
+    let apellido=document.getElementById("txtApellido")
+    apellido.value="";
+    let ingreso=document.getElementById("txtIngresos")
+    ingreso.value="";
+    let egreso=document.getElementById("txtEgresos")
+    egreso.value="";
+
+    clienteSeleccionado=null;
+}
