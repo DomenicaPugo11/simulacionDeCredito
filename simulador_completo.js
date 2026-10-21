@@ -1,4 +1,3 @@
-
   let clientes = [];
   let creditos = [];
 
@@ -42,5 +41,40 @@
     }else{
       mostrarTexto("mensajeTasa","La tasa debe estar entre 10% y 20%")
     }
+  }
 
+  function guardarCliente(){
+    let cedula=recuperaraTexto("txtCedula");
+    let nombre=recuperaraTexto("txtNombre");
+    let apellido=recuperaraTexto("txtApellido");
+    let ingresos=recuperarFloat("txtIngresos");
+    let egresos=recuperarFloat("txtEgresos");
+    let cliente = {};
+    cliente.cedula=cedula;
+    cliente.nombre=nombre;
+    cliente.apellido=apellido;
+    cliente.ingresos=ingresos;
+    cliente.egresos=egresos;
+    clientes.push(cliente);
+    pintarClientes();
+  }
+
+  function pintarClientes(){
+    let cmpTabla=document.getElementById("tablaClientes");
+    let elementoCliente;
+    let contenidoTabla="<table>";
+    for (let i=0;i<clientes.length;i++){
+      elementoCliente=clientes[i];
+      contenidoTabla+="<tr>";
+      contenidoTabla+="<td>"+ elementoCliente.cedula + "</td>";
+      contenidoTabla+="<td>"+ elementoCliente.nombre + "</td>";
+      contenidoTabla+="<td>"+ elementoCliente.apellido + "</td>";
+      contenidoTabla+="<td>"+ elementoCliente.ingresos + "</td>";
+      contenidoTabla+="<td>"+ elementoCliente.egresos + "</td>";
+      contenidoTabla+="<td> <button>ACTUALIZAR</button> </td>"; 
+      contenidoTabla+="<td> <button>ELIMINAR</button> </td>"; 
+      contenidoTabla+="</tr>"
+    }
+    contenidoTabla+="</table>"
+    cmpTabla.innerHTML=contenidoTabla;
   }
